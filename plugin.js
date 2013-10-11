@@ -15,8 +15,9 @@ tinymce.PluginManager.add('blockquote', function(editor) {
 
 	function showDialog() {
 
-		var selection 	= editor.selection,
-			dom 		= editor.dom,
+		var selection 			= editor.selection,
+			dom 				= editor.dom,
+			selectionContent 	= selection.getContent(),
 			child,
 			i,
 			a;
@@ -31,7 +32,7 @@ tinymce.PluginManager.add('blockquote', function(editor) {
 		selectedNode = selection.getNode();
 
 		//there is no selection
-		if (selectedNode.nodeName == 'BODY') {
+		if (selectedNode.nodeName == 'BODY' && selectionContent.length == 0) {
 			hadSelection = false;
 		}
 		else {
@@ -40,7 +41,6 @@ tinymce.PluginManager.add('blockquote', function(editor) {
 			try {
 				while (dom.getParent(selectedNode).parentNode)
 				{
-					selectedNode = dom.getParent(selectedNode).parentNode;
 					if (selectedNode.nodeName == 'BLOCKQUOTE') {
 						for (i = 0; i < selectedNode.childNodes.length; i++)
 						{
@@ -64,10 +64,19 @@ tinymce.PluginManager.add('blockquote', function(editor) {
 						}
 						break;
 					}
+					selectedNode = dom.getParent(selectedNode).parentNode;
 				}
 			} catch(e) {
-				selectedNode = dom.getParent(selection.getNode());
-				settings.quote = selectedNode.textContent;
+				//Reset selection node
+				selectedNode = selection.getNode();
+				if (selectedNode.nodeName == 'BODY') {
+					selectedNode = selection.getSelectedBlocks();
+					settings.quote = selectionContent.replace(/<br \/>/g, "\r\n").replace(/<\/p>/g, "\r\n").replace(/(<[^>]*>)/g, '').replace(/&nbsp;/g, '');
+				}
+				else {
+					selectedNode = dom.getParent(selection.getNode());
+					settings.quote = selectedNode.innerHTML.replace(/<br \/>/g, "\r\n").replace(/(<[^>]*>)/g, '').replace(/&nbsp;/g, '');
+				}
 			}
 		}
 
