@@ -7,7 +7,7 @@ Installation
 -------
 
 * Plugin externe :
-Mettez le dossier syntaxHighlighter sur votre serveur web
+Mettez le dossier blockquote sur votre serveur web
 ```js
 tinymce.init({
 	[...]
@@ -21,8 +21,8 @@ tinymce.init({
 Remplacez 'PathToBlockquote' par l'adresse du dossier blockquote
 
 * Plugin interne :
-```js
 Ajoutez le dossier blockquote dans le dossier des plugins de TinyMCE ('tinymce/plugins/')
+```js
 tinymce.init({
 	[...]
 	plugins: "[...] blockquote",
